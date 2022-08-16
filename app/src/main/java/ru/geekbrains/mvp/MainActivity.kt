@@ -22,13 +22,13 @@ class MainActivity : AppCompatActivity(), MainView {
 
         with(binding) {
             btnNum1.setOnClickListener {
-                presenter.counterClick(R.id.btnNum1)
+                presenter.counterClickButton1()
             }
             btnNum2.setOnClickListener {
-                presenter.counterClick(R.id.btnNum2)
+                presenter.counterClickButton2()
             }
             btnNum3.setOnClickListener {
-                presenter.counterClick(R.id.btnNum3)
+                presenter.counterClickButton3()
             }
         }
     }
@@ -38,13 +38,15 @@ class MainActivity : AppCompatActivity(), MainView {
         super.onDestroy()
     }
 
-    override fun setButtonText(index: Int, text: String) {
-        with(binding) {
-            when (index) {
-                0 -> tvText1.text = text
-                1 -> tvText2.text = text
-                2 -> tvText3.text = text
-            }
-        }
+    override fun setButton1Text(text: String) {
+        binding.tvText1.text = text
+    }
+
+    override fun setButton2Text(text: String) {
+        binding.tvText2.text = text
+    }
+
+    override fun setButton3Text(text: String) {
+        binding.tvText3.text = text
     }
 }
