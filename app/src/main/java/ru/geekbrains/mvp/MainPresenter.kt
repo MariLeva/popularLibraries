@@ -1,18 +1,16 @@
 package ru.geekbrains.mvp
 
-class MainPresenter(private val view: MainView) {
+import com.github.terrakok.cicerone.Router
+import moxy.MvpPresenter
+import ru.geekbrains.mvp.repository.GithubRepository
+import ru.geekbrains.mvp.user.MainView
 
-    private val model = CountersModel()
+class MainPresenter(
+    private val repository: GithubRepository
+): MvpPresenter<MainView>() {
 
-    fun counterClickButton1(){
-        view.setButton1Text(model.next(0).toString())
-    }
-
-    fun counterClickButton2(){
-        view.setButton2Text(model.next(1).toString())
-    }
-
-    fun counterClickButton3(){
-        view.setButton3Text(model.next(2).toString())
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        viewState.initList(repository.getUsers())
     }
 }

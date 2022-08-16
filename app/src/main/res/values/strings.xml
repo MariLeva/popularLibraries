@@ -5,4 +5,6 @@
     <string name="num1">number1</string>
     <string name="num2">number2</string>
     <string name="num3">number3</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
