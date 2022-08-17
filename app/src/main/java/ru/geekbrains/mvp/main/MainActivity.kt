@@ -2,33 +2,40 @@ package ru.geekbrains.mvp.main
 
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.terrakok.cicerone.androidx.AppNavigator
 import moxy.MvpAppCompatActivity
 import moxy.ktx.moxyPresenter
-import ru.geekbrains.mvp.MainPresenter
+import ru.geekbrains.mvp.GeekBrainsApp
+import ru.geekbrains.mvp.R
+import ru.geekbrains.mvp.core.BackPressedListener
+import ru.geekbrains.mvp.core.nav.UsersScreen
 import ru.geekbrains.mvp.databinding.ActivityMainBinding
 import ru.geekbrains.mvp.model.GithubUser
 import ru.geekbrains.mvp.repository.impl.GithubRepositoryImpl
-import ru.geekbrains.mvp.user.MainView
 
 class MainActivity : MvpAppCompatActivity(), MainView {
 
     private var _binding: ActivityMainBinding? = null
     private val binding: ActivityMainBinding get() = _binding!!
 
-    private val adapter = UserAdapter()
-    private val presenter by  moxyPresenter { MainPresenter(GithubRepositoryImpl()) }
+    private val navigator = AppNavigator(this, R.id.containerMain)
+
+    private val presenter by  moxyPresenter { MainPresenter(UsersScreen(), GeekBrainsApp.instance.router) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+    }
 
-        with(binding){
-            rvUsers.layoutManager = LinearLayoutManager(this@MainActivity)
-            rvUsers.setItemViewCacheSize(1)
-            rvUsers.adapter = adapter
-        }
+    override fun onResumeFragments() {
+        super.onResumeFragments()
+        GeekBrainsApp.instance.navigationHolder.setNavigator(navigator)
+    }
 
+    override fun onPause() {
+        GeekBrainsApp.instance.navigationHolder.setNavigator(navigator)
+        super.onPause()
     }
 
     override fun onDestroy() {
@@ -36,7 +43,12 @@ class MainActivity : MvpAppCompatActivity(), MainView {
         super.onDestroy()
     }
 
-    override fun initList(list: List<GithubUser>) {
-        adapter.users = list
+    override fun onBackPressed() {
+        supportFragmentManager.fragments.forEach { currentFragment ->
+            if (currentFragment is BackPressedListener && currentFragment.onBackPressed()){
+                return
+            }
+        }
+        presenter.onBackPressed()
     }
 }

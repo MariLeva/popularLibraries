@@ -7,9 +7,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.geekbrains.mvp.R
+import ru.geekbrains.mvp.databinding.FragmentUserBinding
+import ru.geekbrains.mvp.databinding.ItemUserBinding
 import ru.geekbrains.mvp.model.GithubUser
 
-class UserAdapter() : RecyclerView.Adapter<ViewHolder>() {
+class UserAdapter(
+    private val onItemClickListener: OnItemClickListener
+) : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
     var users: List<GithubUser> = emptyList()
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
@@ -27,12 +31,15 @@ class UserAdapter() : RecyclerView.Adapter<ViewHolder>() {
     }
 
     override fun getItemCount() = users.size
-}
 
-class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    private val tvLogin by lazy { itemView.findViewById<TextView>(R.id.tvUserLogin) }
 
-    fun bind(item: GithubUser) = with(item) {
-        tvLogin.text = login
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun bind(item: GithubUser) {
+            val binding = ItemUserBinding.bind(itemView)
+            binding.tvUserLogin.text = item.login
+            binding.root.setOnClickListener {
+                onItemClickListener.onItemClick(item)
+            }
+        }
     }
 }
