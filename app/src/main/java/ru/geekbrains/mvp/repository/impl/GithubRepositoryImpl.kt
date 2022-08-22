@@ -1,5 +1,7 @@
 package ru.geekbrains.mvp.repository.impl
 
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import ru.geekbrains.mvp.model.GithubUser
 import ru.geekbrains.mvp.repository.GithubRepository
 
@@ -12,8 +14,10 @@ class GithubRepositoryImpl : GithubRepository {
         GithubUser("login5")
     )
 
-    override fun getUsers(): List<GithubUser> {
-        return repositories
+    override fun getUsers(): Single<List<GithubUser>> {
+        return Single.create {
+            it.onSuccess(repositories)
+        }
     }
 
 
