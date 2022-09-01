@@ -2,4 +2,6 @@
 <resources>
     <dimen name="padding_item_user">16dp</dimen>
     <dimen name="textSize_item_user">30sp</dimen>
+    <dimen name="margin_file_fragment">30dp</dimen>
+    <dimen name="textSize_name_file">16dp</dimen>
 </resources>
