@@ -1,12 +1,14 @@
 package ru.geekbrains.mvp.jpgToPng
 
 import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
+import androidx.core.view.drawToBitmap
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 import ru.geekbrains.mvp.GeekBrainsApp
@@ -20,7 +22,7 @@ class FileFragment : MvpAppCompatFragment(), FileView, BackPressedListener {
     private lateinit var viewBinding: FragmentFileBinding
 
     private val presenter by moxyPresenter {
-        FilePresenter(FileRepositoryImpl(), UsersScreen(), GeekBrainsApp.instance.router)
+        FilePresenter(FileRepositoryImpl(), this.requireContext(), UsersScreen(), GeekBrainsApp.instance.router)
     }
 
     override fun onCreateView(
@@ -39,14 +41,14 @@ class FileFragment : MvpAppCompatFragment(), FileView, BackPressedListener {
             intentImage.type = "image/*"
             startActivityForResult(intentImage, 1)
         }
-        viewBinding.buttonToPng.setOnClickListener {}
+        viewBinding.buttonToPng.setOnClickListener {
+            presenter.onJpgToPng(viewBinding.imageView.drawToBitmap())
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        presenter.onLoadingFile(data?.data.toString(), data?.data?.path.toString())
-
-        viewBinding.textName.text = data?.data?.path
+        presenter.onLoadingFile(data?.data.toString())
     }
 
     companion object {
